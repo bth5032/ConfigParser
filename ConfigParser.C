@@ -68,10 +68,10 @@ public:
 				while( ! ( isWhiteSpace(line) || (line.substr(0,5) == "Name=" ) ) ){
 					//cout<<"SECOND LOOP"<<line<<endl;
 					extractOptFromLine(line);
-					getline(*config_file, line);
 					if (config_file->eof()){
 						break;
 					}
+					getline(*config_file, line);
 				}
 				config_file->seekg(0,config_file->beg);
 				break;
