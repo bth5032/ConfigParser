@@ -1,3 +1,6 @@
+#ifndef INCLUDED_CONFIG_PARSER
+#define INCLUDED_CONFIG_PARSER
+
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -192,3 +195,4 @@ public:
 
 };
 
+#endif
