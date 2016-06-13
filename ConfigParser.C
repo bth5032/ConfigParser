@@ -167,11 +167,11 @@ public:
 	}
 
 	string get(string key){
-		if (hasKey(default_options, key)) {
-			return default_options[key];
-		}
-		else if (hasKey(options, key)){
+		if (hasKey(options, key)){
 			return options[key];
+		}
+		else if (hasKey(default_options, key)) {
+			return default_options[key];
 		}
 		else{
 			return "";
@@ -179,11 +179,11 @@ public:
 	}
 
 	string operator [] (string key) {
-		if (hasKey(default_options, key)) {
-			return default_options[key];
-		}
-		else if (hasKey(options, key)){
+		if (hasKey(options, key)){
 			return options[key];
+		}
+		else if (hasKey(default_options, key)) {
+			return default_options[key];
 		}
 		else{
 			return "";
