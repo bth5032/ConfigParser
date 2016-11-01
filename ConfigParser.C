@@ -29,6 +29,13 @@ bool hasKey(map<string, string> m, string key){
 	}
 }
 
+string cleanedArg(string arg){
+	string cleaned = arg.substr(0,arg.find("#")); //get argument before comment
+	cleaned = cleaned.substr(0, cleaned.find_last_not_of(" \t")+1); //strip off tabs and spaces.
+
+	return cleaned;
+}
+
 class ConfigParser{
 
 private:
@@ -47,7 +54,7 @@ private:
 		if(opt_key != "" && opt_value != ""){
 			//if default option, add it to defaults dict
 			if (default_opt){
-				default_options[opt_key] = opt_value;	
+				default_options[opt_key] = cleanedArg(opt_value);	
 			} 
 			else{
 				options[opt_key] = opt_value;
