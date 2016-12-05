@@ -82,6 +82,18 @@ void testSeqAccess(){
 	}
 }
 
+void testMemLeak(){
+	ConfigParser *conf = new ConfigParser("test.conf");
+	conf->loadNextConfig();
+	for (int i = 0; i<100000000; i++){
+		for (int j = 0; j<100; j++){
+			if (conf->get(to_string( double (i-(j/100.)) ) ) != ""){
+				cout<<"conf has "<<(double (i-(j/100.)))<<endl;
+			}
+		}
+	}
+}
+
 void testConfigReset(){
 	ConfigParser conf("test.conf");
 	conf.loadNextConfig();
@@ -103,4 +115,7 @@ int main(){
 	
 	cout<<"\n\nReset Testing:"<<endl;
 	testConfigReset();
+
+	cout<<"\n\n Testing Mem Leak:"<<endl;
+	testMemLeak();
 }

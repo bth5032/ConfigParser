@@ -9,7 +9,7 @@
 
 using namespace std;
 
-bool isWhiteSpace(string str){
+bool isWhiteSpace(const string &str){
 	for (int i = 0; i<(int)str.size(); i++){
 		if ( (! (str[i] == ' ')) && (! (str[i] == '\t') ) ){
 			return false;	
@@ -18,39 +18,23 @@ bool isWhiteSpace(string str){
 	return true;
 }
 
-bool hasKey(map<string, string> m, string key){
-	//returns true if the map has the key, false otherwise.
-	map<string, string>::iterator i = m.find(key);
-	if (i != m.end()){
-		return true;
-	}
-	else{
-		return false;
-	}
-}
-
 class ConfigParser{
 
 private:
 	ifstream *config_file;
+	string conf_path;
 	map<string, string> options;
 	map<string, string> default_options;
 	int currentLocation=0;
 
-	string cleanedArg(string arg){
+	string cleanedArg(const string &arg){
 		string cleaned = arg.substr(0,arg.find("#")); //get argument before comment
 		cleaned = cleaned.substr(0, cleaned.find_last_not_of(" \t")+1); //strip off tabs and spaces.
 
 		return cleaned;
 	}
 
-	void extractOptFromLine(string line, bool default_opt=false){
-		/*Extract a value from a line*/
-		string opt_key; // holds key from line
-		string opt_value; // holds value for key
-		opt_key=line.substr(0, line.find('='));
-		opt_value=line.substr(line.find('=')+1);
-		
+	bool addOpt(string opt_key, string opt_value, bool default_opt=false){
 		if(opt_key != "" && opt_value != ""){
 			//if default option, add it to defaults dict
 			if (default_opt){
@@ -59,24 +43,47 @@ private:
 			else{
 				options[opt_key] = cleanedArg(opt_value);
 			}
+			return true;
 		}
-		
 		else{
-			cout<<"Error parsing line number: "<<config_file->tellg()<<" : "<<line<<endl;
+			return false;
 		}
 	}
 
+	void extractOptFromLine(string line, bool default_opt=false){
+		/*Extract a value from a line*/
+		string opt_key; // holds key from line
+		string opt_value; // holds value for key
+		opt_key=line.substr(0, line.find('='));
+		opt_value=line.substr(line.find('=')+1);
+
+		if ( ! addOpt(opt_key, opt_value, default_opt)){
+			cout<<"Error parsing line number: "<<config_file->tellg()<<" : "<<line<<endl;
+		}
+	}
 
 public:
 
 	ConfigParser(string filename){
 		//just opens the file stream 
 		config_file = new ifstream(filename);
+		conf_path=filename;
 	}
 
 	string findFirstConfig(){
 		config_file->seekg(0,config_file->beg); //set to begining
 		return findNextConfig();
+	}
+
+	bool hasKey(const map<string, string> &m, const string &key){
+		//returns true if the map has the key, false otherwise.
+		map<string, string>::const_iterator i = m.find(key);
+		if (i != m.end()){
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 
 	string findNextConfig(){
@@ -120,7 +127,8 @@ public:
 		config_file->seekg(0,config_file->beg); //always start from the begining of the file to pick up defaults, will slow down everything some amount but whatever.
 		
 		options.clear(); // clear all the non-default options
-		
+		default_options.clear(); // clear default options as well
+
 		string line; //Holds arbitrary lines.
 		string opt_line; //Holds lines like option="value".
 		string opt_key; //Holds 'option' in the above example
@@ -138,6 +146,7 @@ public:
 			}
 
 			else if (line == "Name="+config_name){
+				addOpt("conf_path", conf_path);
 				currentLocation=config_file->tellg();
 				found_config=true;
 				extractOptFromLine(line); // should extract the name
