@@ -15,7 +15,7 @@ An example of a config file is `test.conf` and example of reading that file in s
 
 A single file can hold many different "configurations", each configuration is defined by the special tag `Name`. A config has a `Name` tag and is followed by a list of line seperated keys. When the config is loaded, you can access the values for those keys using `conf->get("KEY_NAME")`. 
 
-Keys and values are seperated by the first instance of the `=` symbol, meaning it is not possible to have a key with that symbol, but it can be included in the value. Each line below the `NAME=CONFIGNAME` line is associated with `CONFIGNAME` until the first blank line or another `NAME=` tag (e.g. the start of the next config).
+Keys and values are seperated by the first instance of the `=` symbol, meaning it is not possible to have a key with that symbol, but it can be included in the value. Each line below the `NAME=CONFIGNAME` line is associated with `CONFIGNAME` until the first blank line or another `NAME=` tag (e.g. the start of the next config). A line starting with `#` is treated as a comment.
 
 An example config is given in `test.conf`.
 
